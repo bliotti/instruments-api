@@ -28,7 +28,7 @@ app.get('/instruments/:instrumentID', function(req, res, next) {
 })
 
 app.post('/instruments', function(req, res, next) {
-	let newInstrument = propOr({}, 'body', req)
+	const newInstrument = propOr({}, 'body', req)
 
 	//	console.log('instrument', newInstrument)
 
@@ -50,9 +50,9 @@ app.post('/instruments', function(req, res, next) {
 		next(new NodeHTTPError(400, `${createMissingFieldMsg(missingFields)}`))
 	}
 
-	newInstrument = cleanObj(requiredFields, newInstrument)
+	const cleanedInstrument = cleanObj(requiredFields, newInstrument)
 
-	addInstrument(newInstrument, function(err, data) {
+	addInstrument(cleanedInstrument, function(err, data) {
 		if (err) {
 			next(
 				new NodeHTTPError(err.status, err.message, { max: 'is the coolest' })
