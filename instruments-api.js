@@ -10,7 +10,7 @@ const {
 	putInstrument
 } = require('./dal')
 const NodeHTTPError = require('node-http-error')
-const { propOr, isEmpty } = require('ramda')
+const { propOr, isEmpty, not } = require('ramda')
 const checkRequiredFields = require('./lib/check-required-fields')
 const createMissingFieldMsg = require('./lib/create-missing-field-msg')
 const cleanObj = require('./lib/clean-obj.js')
