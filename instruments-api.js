@@ -8,6 +8,7 @@ const NodeHTTPError = require('node-http-error')
 const { propOr, isEmpty } = require('ramda')
 const checkRequiredFields = require('./lib/check-required-fields')
 const createMissingFieldMsg = require('./lib/create-missing-field-msg')
+const cleanObj = require('./lib/clean-obj.js')
 
 app.use(bodyParser.json())
 
@@ -27,7 +28,7 @@ app.get('/instruments/:instrumentID', function(req, res, next) {
 })
 
 app.post('/instruments', function(req, res, next) {
-	const newInstrument = propOr({}, 'body', req)
+	let newInstrument = propOr({}, 'body', req)
 
 	//	console.log('instrument', newInstrument)
 
@@ -48,7 +49,8 @@ app.post('/instruments', function(req, res, next) {
 	if (!isEmpty(missingFields)) {
 		next(new NodeHTTPError(400, `${createMissingFieldMsg(missingFields)}`))
 	}
-	// TODO: Pick required
+
+	newInstrument = cleanObj(requiredFields, newInstrument)
 
 	addInstrument(newInstrument, function(err, data) {
 		if (err) {
