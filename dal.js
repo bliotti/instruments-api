@@ -3,7 +3,7 @@ client --> | --> instruments-api --> dal --> | --> couchdb
 */
 
 require('dotenv').config()
-const { merge } = require('ramda')
+const { merge, map } = require('ramda')
 const PouchDB = require('pouchdb-core')
 const pkGen = require('./lib/pk-gen')
 
@@ -14,6 +14,13 @@ const db = new PouchDB(
 )
 
 const getInstrument = (id, callback) => db.get(id, callback)
+
+const listInstruments = cb => {
+	db.allDocs({ include_docs: true }, (err, results) => {
+		if (err) cb(err)
+		cb(null, map(row => row.doc, results.rows))
+	})
+}
 
 const addInstrument = (instrument, callback) => {
 	//console.log('HI Im inside addInstrument')
@@ -45,8 +52,6 @@ const putInstrument = (instrument, callback) => {
 	db.put(instrument, callback)
 }
 
-//const updateInstrument = (instrument, callback) => db.put(instrument, callback)
-
 ///////////////////////////
 ////  HELPER FUNCTIONS ////
 ///////////////////////////
@@ -60,7 +65,8 @@ const dal = {
 	getInstrument,
 	addInstrument,
 	deleteInstrument,
-	putInstrument
+	putInstrument,
+	listInstruments
 }
 
 module.exports = dal

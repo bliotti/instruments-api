@@ -7,7 +7,8 @@ const {
 	getInstrument,
 	addInstrument,
 	deleteInstrument,
-	putInstrument
+	putInstrument,
+	listInstruments
 } = require('./dal')
 const NodeHTTPError = require('node-http-error')
 const { propOr, isEmpty, not } = require('ramda')
@@ -19,6 +20,16 @@ app.use(bodyParser.json())
 
 app.get('/', function(req, res, next) {
 	res.send('Welcome to the Instruments api.')
+})
+
+app.get('/instruments', function(req, res, next) {
+	listInstruments(function(err, instruments) {
+		if (err) {
+			next(new NodeHTTPError(err.status, err.message, err))
+			return
+		}
+		res.status(200).send(instruments)
+	})
 })
 
 app.get('/instruments/:instrumentID', function(req, res, next) {
